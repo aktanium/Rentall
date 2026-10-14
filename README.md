@@ -1,6 +1,6 @@
 # RentAll
 
-**Status: Week 2 — Project skeleton**
+**Status: Week 3 — Data models and seed data**
 
 RentAll is an all-in-one rental marketplace where people can rent or list cars, bikes, scooters, apartments and event venues. Owners publish listings with hourly or daily prices. Renters search the catalog on a map, book available dates, pay online and leave reviews. The platform guarantees that active bookings never overlap.
 
@@ -14,6 +14,12 @@ Requires Docker.
 cp .env.example .env
 docker compose up --build
 # open http://localhost:8000  (health check: http://localhost:8000/health)
+```
+
+Load demo data (5 categories, 5 users with password `password123`, 20 listings in Bishkek):
+
+```bash
+docker compose exec web flask seed
 ```
 
 Run the tests (Postgres from docker compose must be running; Python 3.12 venv with `pip install -r requirements-dev.txt`):
@@ -51,3 +57,4 @@ pytest --cov=app
 - [User flows](docs/user-flows.md)
 - [Key pages](docs/pages.md)
 - [Competitor analysis](docs/competitors.md)
+- [Database and ER diagram](docs/database.md)

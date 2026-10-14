@@ -23,9 +23,11 @@ def create_app(config_name: str | None = None) -> Flask:
     csrf.init_app(app)
 
     from app import models  # noqa: F401  (register models with SQLAlchemy metadata)
+    from app.cli import register_commands
 
     _register_blueprints(app)
     _register_error_handlers(app)
+    register_commands(app)
 
     return app
 

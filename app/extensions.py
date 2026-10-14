@@ -26,9 +26,3 @@ csrf = CSRFProtect()
 
 login_manager.login_view = "auth.login"
 login_manager.login_message = "Войдите, чтобы продолжить."
-
-
-@login_manager.user_loader
-def load_user(user_id: str):
-    # No User model yet: everyone is anonymous.
-    return None

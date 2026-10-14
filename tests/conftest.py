@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pathlib import Path
 
 import pytest
@@ -6,6 +7,8 @@ from sqlalchemy import text
 
 from app import create_app
 from app.extensions import db
+from app.models import Category, Listing
+from tests.factories import make_user
 
 MIGRATIONS_DIR = str(Path(__file__).resolve().parent.parent / "migrations")
 
@@ -41,3 +44,33 @@ def _clean_tables(app):
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture
+def owner(app):
+    return make_user("owner@example.com", is_owner=True)
+
+
+@pytest.fixture
+def renter(app):
+    return make_user("renter@example.com")
+
+
+@pytest.fixture
+def listing(owner):
+    category = Category(name="Машины", slug="cars", default_price_unit="day")
+    listing = Listing(
+        owner=owner,
+        category=category,
+        title="Toyota Camry",
+        description="Test car",
+        price=Decimal("3500"),
+        price_unit="day",
+        city="Бишкек",
+        address="ул. Киевская, 96",
+        lat=42.8761,
+        lng=74.5962,
+    )
+    db.session.add(listing)
+    db.session.commit()
+    return listing
