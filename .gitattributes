@@ -1,0 +1,2 @@
+# Keep LF line endings in the repo so shell commands and Docker files work on Linux.
+* text=auto eol=lf

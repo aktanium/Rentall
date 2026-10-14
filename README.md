@@ -1,10 +1,26 @@
 # RentAll
 
-**Status: Week 1 — Planning**
+**Status: Week 2 — Project skeleton**
 
 RentAll is an all-in-one rental marketplace where people can rent or list cars, bikes, scooters, apartments and event venues. Owners publish listings with hourly or daily prices. Renters search the catalog on a map, book available dates, pay online and leave reviews. The platform guarantees that active bookings never overlap.
 
 University project for the SU DevOps & Cloud Fundamentals 2026 course.
+
+## Run locally
+
+Requires Docker.
+
+```bash
+cp .env.example .env
+docker compose up --build
+# open http://localhost:8000  (health check: http://localhost:8000/health)
+```
+
+Run the tests (Postgres from docker compose must be running; Python 3.12 venv with `pip install -r requirements-dev.txt`):
+
+```bash
+pytest --cov=app
+```
 
 ## Tech stack
 
