@@ -23,6 +23,11 @@ class BaseConfig:
     WTF_CSRF_ENABLED = True
     TESTING = False
     DEBUG = False
+    # Flask-Limiter. memory:// is per process; use Redis when running several workers.
+    RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
+    PASSWORD_RESET_MAX_AGE = 3600  # seconds
+    # Trust X-Forwarded-For from one proxy (Render) so rate limits see the real client IP.
+    PROXY_FIX = False
 
 
 class DevConfig(BaseConfig):
@@ -37,7 +42,9 @@ class TestConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
-    pass
+    SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
+    PROXY_FIX = True
 
 
 CONFIGS = {

@@ -8,3 +8,7 @@ def make_user(email: str, *, is_owner: bool = False) -> User:
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def login(client, email: str, password: str = "password123", **extra):
+    return client.post("/auth/login", data={"email": email, "password": password, **extra})

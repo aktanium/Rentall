@@ -2,11 +2,12 @@ from decimal import Decimal
 from pathlib import Path
 
 import pytest
+from flask import g
 from flask_migrate import upgrade
 from sqlalchemy import text
 
 from app import create_app
-from app.extensions import db
+from app.extensions import db, limiter
 from app.models import Category, Listing
 from tests.factories import make_user
 
@@ -23,6 +24,13 @@ def _reset_schema() -> None:
 @pytest.fixture(scope="session")
 def app():
     app = create_app("test")
+
+    @app.teardown_request
+    def _forget_cached_user(exc):
+        # Tests share one app context (and `g`), where Flask-Login caches the user.
+        # Drop it so every request loads the user from its own session cookie.
+        g.pop("_login_user", None)
+
     with app.app_context():
         # Build the schema from migrations so DB-level constraints match production.
         _reset_schema()
@@ -33,6 +41,7 @@ def app():
 
 @pytest.fixture(autouse=True)
 def _clean_tables(app):
+    limiter.reset()
     yield
     db.session.remove()
     tables = ", ".join(f'"{t.name}"' for t in db.metadata.sorted_tables)

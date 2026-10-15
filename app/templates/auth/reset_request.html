@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field, auth_card %}
+
+{% block title %}Восстановление пароля{% endblock %}
+
+{% block content %}
+{% call auth_card("Восстановление пароля") %}
+  <p class="text-muted">Укажите email, с которым вы регистрировались. Мы отправим ссылку для смены пароля.</p>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ render_field(form.email, autocomplete="email") }}
+    {{ form.submit(class="btn btn-primary w-100") }}
+  </form>
+  <p class="mt-3 mb-0 text-center"><a href="{{ url_for('auth.login') }}">Вернуться ко входу</a></p>
+{% endcall %}
+{% endblock %}

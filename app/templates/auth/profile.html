@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Профиль</h1>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <p class="mb-3"><span class="text-muted">Email:</span> {{ current_user.email }}</p>
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          {{ render_field(form.name, autocomplete="name") }}
+          {{ render_field(form.phone, autocomplete="tel") }}
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        {% if current_user.is_owner %}
+          <h2 class="h5">Вы арендодатель</h2>
+          <p class="text-muted mb-0">Вы можете размещать объявления и принимать бронирования.</p>
+        {% else %}
+          <h2 class="h5">Сдавайте свои вещи в аренду</h2>
+          <p class="text-muted">Станьте арендодателем, чтобы размещать машины, велосипеды, жильё и площадки.</p>
+          <form method="post" action="{{ url_for('auth.become_owner') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-success">Стать арендодателем</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 # RentAll
 
-**Status: Week 3 — Data models and seed data**
+**Status: Week 4 — Authentication and user roles**
 
 RentAll is an all-in-one rental marketplace where people can rent or list cars, bikes, scooters, apartments and event venues. Owners publish listings with hourly or daily prices. Renters search the catalog on a map, book available dates, pay online and leave reviews. The platform guarantees that active bookings never overlap.
 

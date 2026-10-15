@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field, auth_card %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+{% call auth_card("Вход") %}
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ render_field(form.email, autocomplete="email") }}
+    {{ render_field(form.password, autocomplete="current-password") }}
+    {{ render_field(form.remember) }}
+    {{ form.submit(class="btn btn-primary w-100") }}
+  </form>
+  <div class="mt-3 d-flex justify-content-between">
+    <a href="{{ url_for('auth.reset_request') }}">Забыли пароль?</a>
+    <a href="{{ url_for('auth.register') }}">Регистрация</a>
+  </div>
+{% endcall %}
+{% endblock %}
