@@ -29,10 +29,12 @@ def create_app(config_name: str | None = None) -> Flask:
 
     from app import models  # noqa: F401  (register models with SQLAlchemy metadata)
     from app.cli import register_commands
+    from app.utils import register_template_filters
 
     _register_blueprints(app)
     _register_error_handlers(app)
     register_commands(app)
+    register_template_filters(app)
 
     return app
 

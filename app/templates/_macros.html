@@ -27,3 +27,27 @@
     </div>
   </div>
 {% endmacro %}
+
+{% macro render_pagination(pagination, endpoint) %}
+  {% if pagination.pages > 1 %}
+    <nav aria-label="Страницы" class="mt-4">
+      <ul class="pagination justify-content-center flex-wrap">
+        <li class="page-item {{ 'disabled' if not pagination.has_prev }}">
+          <a class="page-link" href="{{ url_for(endpoint, page=pagination.prev_num, **kwargs) if pagination.has_prev else '#' }}" aria-label="Назад">&laquo;</a>
+        </li>
+        {% for page in pagination.iter_pages(left_edge=1, left_current=1, right_current=1, right_edge=1) %}
+          {% if page is none %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+          {% elif page == pagination.page %}
+            <li class="page-item active" aria-current="page"><span class="page-link">{{ page }}</span></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for(endpoint, page=page, **kwargs) }}">{{ page }}</a></li>
+          {% endif %}
+        {% endfor %}
+        <li class="page-item {{ 'disabled' if not pagination.has_next }}">
+          <a class="page-link" href="{{ url_for(endpoint, page=pagination.next_num, **kwargs) if pagination.has_next else '#' }}" aria-label="Вперёд">&raquo;</a>
+        </li>
+      </ul>
+    </nav>
+  {% endif %}
+{% endmacro %}

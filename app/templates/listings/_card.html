@@ -1,0 +1,36 @@
+{% macro listing_card(listing, rating) %}
+  <div class="card h-100 shadow-sm listing-card">
+    <a href="{{ url_for('listings.detail', listing_id=listing.id) }}">
+      {% if listing.images %}
+        <img src="{{ listing.images[0].url }}" class="card-img-top" alt="{{ listing.title }}" loading="lazy">
+      {% else %}
+        <div class="card-img-top d-flex align-items-center justify-content-center text-muted">
+          <i class="bi bi-image fs-1" aria-hidden="true"></i>
+        </div>
+      {% endif %}
+    </a>
+    <div class="card-body d-flex flex-column">
+      <span class="badge text-bg-light align-self-start mb-2">
+        <i class="bi {{ listing.category.slug|category_icon }}" aria-hidden="true"></i> {{ listing.category.name }}
+      </span>
+      <h3 class="card-title h6 mb-1" title="{{ listing.title }}">
+        <a href="{{ url_for('listings.detail', listing_id=listing.id) }}" class="stretched-link text-decoration-none text-body">
+          {{ listing.title }}
+        </a>
+      </h3>
+      <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ listing.city }}</p>
+      <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+        <span class="fw-bold text-nowrap">{{ listing.price|price(listing.price_unit) }}</span>
+        {{ rating_badge(rating) }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro rating_badge(rating) %}
+  <span class="small text-nowrap {{ 'text-muted' if not rating.count }}"
+        title="{{ rating.count }} {{ rating.count|plural_ru('отзыв', 'отзыва', 'отзывов') }}">
+    <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
+    {{ "%.1f"|format(rating.average) }} <span class="text-muted">({{ rating.count }})</span>
+  </span>
+{% endmacro %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% from "listings/_card.html" import rating_badge %}
+
+{% block title %}{{ listing.title }}{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a href="{{ url_for('listings.index') }}">Каталог</a></li>
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('listings.index', category=listing.category.slug) }}">{{ listing.category.name }}</a>
+    </li>
+    <li class="breadcrumb-item active text-truncate" aria-current="page">{{ listing.title }}</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    {% if listing.images %}
+      <div id="listing-photos" class="carousel slide rounded-3 overflow-hidden" data-bs-ride="false">
+        {% if listing.images|length > 1 %}
+          <div class="carousel-indicators">
+            {% for image in listing.images %}
+              <button type="button" data-bs-target="#listing-photos" data-bs-slide-to="{{ loop.index0 }}"
+                      class="{{ 'active' if loop.first }}" {% if loop.first %}aria-current="true"{% endif %}
+                      aria-label="Фото {{ loop.index }}"></button>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="carousel-inner">
+          {% for image in listing.images %}
+            <div class="carousel-item {{ 'active' if loop.first }}">
+              <img src="{{ image.url }}" class="d-block listing-photo" alt="{{ listing.title }} — фото {{ loop.index }}"
+                   {% if not loop.first %}loading="lazy"{% endif %}>
+            </div>
+          {% endfor %}
+        </div>
+        {% if listing.images|length > 1 %}
+          <button class="carousel-control-prev" type="button" data-bs-target="#listing-photos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Предыдущее фото</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#listing-photos" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Следующее фото</span>
+          </button>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="listing-photo rounded-3 d-flex align-items-center justify-content-center text-muted">
+        <i class="bi bi-image display-4" aria-hidden="true"></i>
+      </div>
+    {% endif %}
+
+    <h1 class="h3 mt-4 mb-2">{{ listing.title }}</h1>
+    <div class="d-flex flex-wrap gap-3 text-muted mb-3">
+      <span><i class="bi {{ listing.category.slug|category_icon }}" aria-hidden="true"></i> {{ listing.category.name }}</span>
+      <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ listing.city }}, {{ listing.address }}</span>
+      {{ rating_badge(rating) }}
+    </div>
+    {# On small screens the booking card is at the bottom, so show the price near the top too. #}
+    <p class="h5 fw-bold d-lg-none mb-3 text-nowrap">{{ listing.price|price(listing.price_unit) }}</p>
+
+    <h2 class="h5">Описание</h2>
+    <p style="white-space: pre-line">{{ listing.description }}</p>
+
+    {% if listing.lat is not none and listing.lng is not none %}
+      <h2 class="h5 mt-4">На карте</h2>
+      <div id="listing-map" class="listing-map border" data-lat="{{ listing.lat }}" data-lng="{{ listing.lng }}"
+           data-title="{{ listing.title }}" role="region" aria-label="Карта: {{ listing.address }}"></div>
+    {% endif %}
+
+    <h2 class="h5 mt-4">Отзывы</h2>
+    {# Reviews will be shown here once they are implemented. #}
+    <div class="border rounded-3 p-4 text-center text-muted">
+      <i class="bi bi-chat-square-text fs-3" aria-hidden="true"></i>
+      <p class="mb-0 mt-2">Отзывов пока нет.</p>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm sticky-lg-top" style="top: 1rem">
+      <div class="card-body p-4">
+        <p class="h4 fw-bold mb-3 text-nowrap">{{ listing.price|price(listing.price_unit) }}</p>
+        {# Booking will be implemented in a later week. #}
+        <button type="button" class="btn btn-primary btn-lg w-100" disabled>Забронировать</button>
+        <p class="small text-muted mt-2 mb-0 text-center">Бронирование скоро появится</p>
+        <hr>
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-person-circle fs-2 text-secondary" aria-hidden="true"></i>
+          <div>
+            <div class="small text-muted">Арендодатель</div>
+            <div class="fw-semibold">{{ listing.owner.name }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="{{ url_for('static', filename='js/listing-map.js') }}"></script>
+{% endblock %}

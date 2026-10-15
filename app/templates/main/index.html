@@ -1,10 +1,55 @@
 {% extends "base.html" %}
+{% from "listings/_card.html" import listing_card %}
 
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-<div class="py-5 text-center">
-  <h1 class="display-5 fw-bold">Арендуйте всё, что нужно</h1>
-  <p class="lead text-muted">Машины, велосипеды, самокаты, жильё и площадки для мероприятий — в одном месте.</p>
-</div>
+<section class="hero rounded-4 p-4 p-md-5 mb-5 text-center">
+  <h1 class="display-6 fw-bold">Арендуйте всё, что нужно</h1>
+  <p class="lead mb-4">Машины, велосипеды, самокаты, жильё и площадки для мероприятий — в одном месте.</p>
+  {# Search logic comes in Week 7; for now the form opens the catalog. #}
+  <form class="row g-2 justify-content-center" action="{{ url_for('listings.index') }}" method="get" role="search">
+    <div class="col-12 col-md-7 col-lg-6">
+      <label for="hero-search" class="visually-hidden">Что вы ищете?</label>
+      <input id="hero-search" type="search" name="q" class="form-control form-control-lg"
+             placeholder="Что вы хотите арендовать?">
+    </div>
+    <div class="col-12 col-md-auto">
+      <button type="submit" class="btn btn-warning btn-lg w-100"><i class="bi bi-search" aria-hidden="true"></i> Найти</button>
+    </div>
+  </form>
+</section>
+
+<section class="mb-5">
+  <h2 class="h4 mb-3">Категории</h2>
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3">
+    {% for category in categories %}
+      <div class="col">
+        <a href="{{ url_for('listings.index', category=category.slug) }}"
+           class="card h-100 text-center text-decoration-none text-body category-tile">
+          <div class="card-body py-4">
+            <i class="bi {{ category.slug|category_icon }} text-primary" aria-hidden="true"></i>
+            <div class="mt-2 fw-semibold">{{ category.name }}</div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <div class="d-flex justify-content-between align-items-baseline mb-3">
+    <h2 class="h4 mb-0">Новые объявления</h2>
+    <a href="{{ url_for('listings.index') }}">Все объявления &rarr;</a>
+  </div>
+  {% if latest %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+      {% for listing in latest %}
+        <div class="col">{{ listing_card(listing, ratings[listing.id]) }}</div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">Объявлений пока нет.</p>
+  {% endif %}
+</section>
 {% endblock %}
