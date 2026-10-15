@@ -57,7 +57,7 @@ def test_duplicate_email_is_rejected(client, email):
 @pytest.mark.parametrize(
     ("changes", "message"),
     [
-        ({"password": "short", "confirm": "short"}, "Пароль должен быть не короче 8 символов."),
+        ({"password": "", "confirm": ""}, "Введите пароль."),
         ({"confirm": "different123"}, "Пароли не совпадают."),
         ({"email": "not-an-email"}, "Введите корректный email."),
         ({"name": ""}, "Введите имя."),
@@ -69,6 +69,25 @@ def test_registration_validation_errors(client, changes, message):
     assert response.status_code == 200
     assert message in response.get_data(as_text=True)
     assert user_count() == 0
+
+
+def test_short_password_is_accepted(client):
+    data = {**REGISTRATION, "password": "1", "confirm": "1"}
+
+    response = client.post("/auth/register", data=data)
+
+    assert response.status_code == 302
+    assert auth_service.get_user_by_email(REGISTRATION["email"]).check_password("1")
+
+
+def test_short_password_is_accepted_on_reset(client, renter):
+    token = auth_service.generate_reset_token(renter)
+
+    response = client.post(f"/auth/reset-password/{token}", data={"password": "1", "confirm": "1"})
+
+    assert response.status_code == 302
+    db.session.refresh(renter)
+    assert renter.check_password("1")
 
 
 # --- Login / logout -------------------------------------------------------------------------

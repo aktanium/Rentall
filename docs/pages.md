@@ -1,6 +1,6 @@
 # Key pages
 
-The six key pages and the blocks each one contains. This is the basis for the wireframes. Every page shares the same **header** (logo, search shortcut, "List your item", login/register or the user menu) and **footer** (links, contacts, course info).
+The six key pages and the blocks each one contains. This is the basis for the wireframes. Every page shares the same **header** (logo, search shortcut, "List your item", login/register or the user menu) and **footer** (links, contacts).
 
 ---
 

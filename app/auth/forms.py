@@ -2,8 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, EmailField, PasswordField, StringField, SubmitField, TelField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, Regexp
 
-MIN_PASSWORD_LENGTH = 8
-
 
 def _strip(value):
     return value.strip() if isinstance(value, str) else value
@@ -21,11 +19,7 @@ def _new_password_fields():
         "Пароль",
         validators=[
             DataRequired(message="Введите пароль."),
-            Length(
-                min=MIN_PASSWORD_LENGTH,
-                max=128,
-                message=f"Пароль должен быть не короче {MIN_PASSWORD_LENGTH} символов.",
-            ),
+            Length(max=128, message="Пароль слишком длинный."),
         ],
     )
     confirm = PasswordField(
